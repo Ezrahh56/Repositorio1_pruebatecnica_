@@ -309,7 +309,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Ganancia Bruta y Neta  por Tiempo'"
+                  "Value": "'Ganancia por Tiempo'"
                 }
               }
             },
