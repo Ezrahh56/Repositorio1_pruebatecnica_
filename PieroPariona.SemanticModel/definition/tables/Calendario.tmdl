@@ -1,0 +1,82 @@
+table Calendario
+	lineageTag: 43cfb4e8-4d33-43f0-8409-d8ee5084082c
+
+	measure 'Ganancia Bruta' = SUM(Data[Ganancia total])
+		formatString: 0
+		lineageTag: cc1d63c2-0368-4475-bc31-ffff42427919
+
+	measure 'Costo total' = SUM(Data[Costo total])
+		formatString: 0
+		lineageTag: a5be29e5-7ed5-46d7-bb0d-5b41b53c858f
+
+	measure 'Ganancia Neta' = [Ganancia Bruta] - [Costo total]
+		formatString: 0
+		lineageTag: b58f7fd2-f4c7-4d4f-8221-838d88c7d387
+
+	measure Medida
+		lineageTag: 44ae1362-bc48-4597-931c-6231417bcda3
+
+	measure 'Medida 2'
+		lineageTag: 9f69bb89-31bd-45fc-90f8-ba49f7bd4031
+
+	measure Categoría1 = DISTINCTCOUNT(Productos[Categoría])
+		formatString: 0
+		lineageTag: 970365f8-7702-4f72-8573-72518a5ba194
+
+	column Fecha
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 3e251f94-0d95-4060-b075-c35a6959cf98
+		summarizeBy: none
+		sourceColumn: Fecha
+
+		variation Variación
+			isDefault
+			relationship: cbe48c25-b91e-4424-a35e-f64474fb5dc2
+			defaultHierarchy: LocalDateTable_6216dc66-2344-4a92-a84e-c764e2616f71.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Nro.Mes'
+		dataType: int64
+		formatString: 0
+		lineageTag: e197b49c-3057-4891-9839-223f781dcd63
+		summarizeBy: sum
+		sourceColumn: Nro.Mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nombre_Mes
+		dataType: string
+		lineageTag: 7c3a82e4-87a7-4ca5-8c98-d000067c3d99
+		summarizeBy: none
+		sourceColumn: Nombre_Mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column Año
+		dataType: int64
+		formatString: 0
+		lineageTag: 627f1611-d8ff-4654-ad40-900b1cb2a037
+		summarizeBy: sum
+		sourceColumn: Año
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Calendario = m
+		mode: import
+		source =
+				let
+				    Origen = Excel.Workbook(File.Contents("C:\Users\tijer\OneDrive\Escritorio\Pacífico Evaluación\Practicante\Proyecto_TresChanchitos\Dataframe\Calendario.xlsx"), null, true),
+				    Sheet1_Sheet = Origen{[Item="Sheet1",Kind="Sheet"]}[Data],
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Sheet1_Sheet, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"Fecha", type date}, {"Nro.Mes", Int64.Type}, {"Nombre_Mes", type text}, {"Año", Int64.Type}})
+				in
+				    #"Tipo cambiado"
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

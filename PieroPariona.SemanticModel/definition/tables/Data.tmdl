@@ -1,0 +1,137 @@
+table Data
+	lineageTag: 0c5e133b-5444-42af-9059-21b66524f0ed
+
+	column OrdenId
+		dataType: int64
+		formatString: 0
+		lineageTag: f7150c36-1571-4db3-a07f-0869b9094c2f
+		summarizeBy: count
+		sourceColumn: OrdenId
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fecha
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: ac1b37d0-458f-4e58-8463-2160ddb587d5
+		summarizeBy: none
+		sourceColumn: Fecha
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column IdTerritorio
+		dataType: int64
+		formatString: 0
+		lineageTag: 66a5e622-3392-451e-893f-7836f3acd6d8
+		summarizeBy: none
+		sourceColumn: IdTerritorio
+
+		annotation SummarizationSetBy = Automatic
+
+	column IdCliente
+		dataType: int64
+		formatString: 0
+		lineageTag: 1aff3fda-1107-4479-a705-dfdd17900578
+		summarizeBy: none
+		sourceColumn: IdCliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column IdProducto
+		dataType: int64
+		formatString: 0
+		lineageTag: d1d0342f-757a-49b9-a87d-35047654d7a7
+		summarizeBy: none
+		sourceColumn: IdProducto
+
+		annotation SummarizationSetBy = Automatic
+
+	column IdVendedor
+		dataType: int64
+		formatString: 0
+		lineageTag: ada926fa-695d-4cd8-afbe-4a0751204d5a
+		summarizeBy: none
+		sourceColumn: IdVendedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cantidad
+		dataType: int64
+		formatString: 0
+		lineageTag: 5fcda3a5-2642-48f8-9138-fc01d9ddaac5
+		summarizeBy: sum
+		sourceColumn: Cantidad
+
+		annotation SummarizationSetBy = Automatic
+
+	column Valido
+		dataType: int64
+		formatString: 0
+		lineageTag: 33cb8337-6da0-429c-804f-eb0a7ed557fb
+		summarizeBy: sum
+		sourceColumn: Valido
+
+		annotation SummarizationSetBy = Automatic
+
+	column PrecioUnitario
+		dataType: decimal
+		formatString: 0
+		lineageTag: cc07db7c-8f63-4e81-a96f-98717572dd02
+		summarizeBy: sum
+		sourceColumn: PrecioUnitario
+
+		annotation SummarizationSetBy = Automatic
+
+	column Costo
+		dataType: decimal
+		formatString: 0
+		lineageTag: db9a5f97-08be-44c4-b8af-9a7ecfd562bb
+		summarizeBy: sum
+		sourceColumn: Costo
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ganancia total'
+		dataType: decimal
+		formatString: 0
+		lineageTag: e7c8c898-5416-4fb7-bd9d-7a1cb1eb0e75
+		summarizeBy: sum
+		sourceColumn: Ganancia total
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Costo total'
+		dataType: decimal
+		formatString: 0
+		lineageTag: 8610a5e3-bbcf-4ea6-9069-d82d3353fb77
+		summarizeBy: sum
+		sourceColumn: Costo total
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Data = m
+		mode: import
+		source =
+				let
+				    Origen = Excel.Workbook(File.Contents("C:\Users\tijer\OneDrive\Escritorio\Pacífico Evaluación\Practicante\Proyecto_TresChanchitos\Dataframe\Data.xlsx"), null, true),
+				    Sheet1_Sheet = Origen{[Item="Sheet1",Kind="Sheet"]}[Data],
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Sheet1_Sheet, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"OrdenId", Int64.Type}, {"Fecha", type date}, {"IdTerr", Int64.Type}, {"IdCliente", Int64.Type}, {"IdProducto", Int64.Type}, {"IdEmp", Int64.Type}, {"Cantidad", Int64.Type}, {"Valido", Int64.Type}, {"PrecioUntario", Int64.Type}, {"Costo", Int64.Type}}),
+				    #"Columnas con nombre cambiado" = Table.RenameColumns(#"Tipo cambiado",{{"IdTerr", "IdTerritorio"}, {"PrecioUntario", "PrecioUnitario"}, {"IdEmp", "IdVendedor"}}),
+				    #"Personalizada agregada" = Table.AddColumn(#"Columnas con nombre cambiado", "Personalizado", each [PrecioUnitario]*[Costo]),
+				    #"Columnas quitadas" = Table.RemoveColumns(#"Personalizada agregada",{"Personalizado"}),
+				    #"Personalizada agregada1" = Table.AddColumn(#"Columnas quitadas", "Ganancia", each [Cantidad]*[PrecioUnitario]),
+				    #"Tipo cambiado1" = Table.TransformColumnTypes(#"Personalizada agregada1",{{"Ganancia", type number}}),
+				    #"Personalizada agregada2" = Table.AddColumn(#"Tipo cambiado1", "Pérdida", each [Cantidad]*[Costo]),
+				    #"Tipo cambiado2" = Table.TransformColumnTypes(#"Personalizada agregada2",{{"Pérdida", Int64.Type}, {"Ganancia", Int64.Type}}),
+				    #"Columnas con nombre cambiado1" = Table.RenameColumns(#"Tipo cambiado2",{{"Pérdida", "Costo total"}, {"Ganancia", "Ganancia total"}}),
+				    #"Tipo cambiado3" = Table.TransformColumnTypes(#"Columnas con nombre cambiado1",{{"PrecioUnitario", Currency.Type}, {"Costo", Currency.Type}, {"Ganancia total", Currency.Type}, {"Costo total", Currency.Type}, {"Fecha", type date}})
+				in
+				    #"Tipo cambiado3"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegación
+

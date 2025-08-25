@@ -1,0 +1,66 @@
+table Territorio
+	lineageTag: 554e9501-d46b-4169-9de0-90286037ec21
+
+	column IdTerritorio
+		dataType: int64
+		formatString: 0
+		lineageTag: 77702cbd-e50b-48ac-8579-c3815afbe4f9
+		summarizeBy: none
+		sourceColumn: IdTerritorio
+
+		annotation SummarizationSetBy = Automatic
+
+	column Lat
+		dataType: double
+		lineageTag: 666ceba9-7ed6-4f44-9fba-bbab7b22e9c9
+		summarizeBy: none
+		sourceColumn: Lat
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Lon
+		dataType: double
+		lineageTag: ff70371c-7f82-43aa-94d0-c8e05fef532e
+		summarizeBy: none
+		sourceColumn: Lon
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Ciudad
+		dataType: string
+		lineageTag: f8be600f-9ca3-42b6-8e76-5346b24e53f6
+		summarizeBy: none
+		sourceColumn: Ciudad
+
+		annotation SummarizationSetBy = Automatic
+
+	column País
+		dataType: string
+		lineageTag: 1f02a3f3-19c8-49dd-978a-041910657b63
+		summarizeBy: none
+		sourceColumn: País
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Territorio = m
+		mode: import
+		source =
+				let
+				    Origen = Excel.Workbook(File.Contents("C:\Users\tijer\OneDrive\Escritorio\Pacífico Evaluación\Practicante\Proyecto_TresChanchitos\Dataframe\Territorio.xlsx"), null, true),
+				    Sheet1_Sheet = Origen{[Item="Sheet1",Kind="Sheet"]}[Data],
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Sheet1_Sheet, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"IdTerritorio", Int64.Type}, {"Lat", type number}, {"Lon", type number}, {"Place", type text}}),
+				    #"Dividir columna por delimitador" = Table.SplitColumn(#"Tipo cambiado", "Place", Splitter.SplitTextByDelimiter(",", QuoteStyle.Csv), {"Place.1", "Place.2"}),
+				    #"Tipo cambiado1" = Table.TransformColumnTypes(#"Dividir columna por delimitador",{{"Place.1", type text}, {"Place.2", type text}}),
+				    #"Columnas con nombre cambiado" = Table.RenameColumns(#"Tipo cambiado1",{{"Place.1", "Ciudad"}, {"Place.2", "País"}})
+				in
+				    #"Columnas con nombre cambiado"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegación
+

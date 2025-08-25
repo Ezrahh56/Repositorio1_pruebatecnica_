@@ -1,0 +1,43 @@
+table Vendedor
+	lineageTag: 43a21d1a-be6c-4d97-bca8-cab2b7838a60
+
+	column IdVendedor
+		dataType: int64
+		formatString: 0
+		lineageTag: 7047b47a-6bea-4b89-9ac5-0a2d15965369
+		summarizeBy: none
+		sourceColumn: IdVendedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nombre
+		dataType: string
+		lineageTag: 2d97a9a1-59bd-430f-8776-05fa29c8e21b
+		summarizeBy: none
+		sourceColumn: Nombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column Apellido
+		dataType: string
+		lineageTag: cec7f03c-851d-43b3-b449-209a1866fab6
+		summarizeBy: none
+		sourceColumn: Apellido
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Vendedor = m
+		mode: import
+		source =
+				let
+				    Origen = Excel.Workbook(File.Contents("C:\Users\tijer\OneDrive\Escritorio\Pacífico Evaluación\Practicante\Proyecto_TresChanchitos\Dataframe\Vendedor.xlsx"), null, true),
+				    Sheet1_Sheet = Origen{[Item="Sheet1",Kind="Sheet"]}[Data],
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Sheet1_Sheet, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"IdVendedor", Int64.Type}, {"Nombre", type text}, {"Apellido", type text}})
+				in
+				    #"Tipo cambiado"
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,53 @@
+table Clientes
+	lineageTag: ba978e4e-1410-4f58-96f8-cefbe4de7d91
+
+	column IdCliente
+		dataType: int64
+		formatString: 0
+		lineageTag: 95169c2d-cf1d-4392-bcc9-ca4905cb942c
+		summarizeBy: none
+		sourceColumn: IdCliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column NombreCli
+		dataType: string
+		lineageTag: 14e84e45-d3be-421f-a384-4be7a5d06460
+		summarizeBy: none
+		sourceColumn: NombreCli
+
+		annotation SummarizationSetBy = Automatic
+
+	column FlagCarro
+		dataType: int64
+		formatString: 0
+		lineageTag: 06f7ab6d-2bac-4a8c-be5e-906889cc12b6
+		summarizeBy: none
+		sourceColumn: FlagCarro
+
+		annotation SummarizationSetBy = Automatic
+
+	column Income
+		dataType: int64
+		formatString: 0
+		lineageTag: 4f56a1d9-73a0-4dc7-bd38-67a697c00439
+		summarizeBy: none
+		sourceColumn: Income
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Clientes = m
+		mode: import
+		source =
+				let
+				    Origen = Excel.Workbook(File.Contents("C:\Users\tijer\OneDrive\Escritorio\Pacífico Evaluación\Practicante\Proyecto_TresChanchitos\Dataframe\Clientes.xlsx"), null, true),
+				    Sheet1_Sheet = Origen{[Item="Sheet1",Kind="Sheet"]}[Data],
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Sheet1_Sheet, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"IdCliente", Int64.Type}, {"NombreCli", type text}, {"FlagCarro", Int64.Type}, {"Income", Int64.Type}})
+				in
+				    #"Tipo cambiado"
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

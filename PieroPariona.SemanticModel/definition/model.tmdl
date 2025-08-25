@@ -1,0 +1,27 @@
+model Model
+	culture: es-PE
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: es-PE
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["Calendario","Clientes","Data","Productos","Territorio","Vendedor"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBIDesktopVersion = 2.146.1026.0 (25.08)+fb98ab832373de81dccd5c01cd96306a48477556
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table Calendario
+ref table DateTableTemplate_6d5bedbe-b4cd-41ed-9d29-1964b6fb6c9b
+ref table LocalDateTable_6216dc66-2344-4a92-a84e-c764e2616f71
+ref table Clientes
+ref table Data
+ref table Productos
+ref table Territorio
+ref table Vendedor
+
+ref cultureInfo es-PE
+

@@ -1,0 +1,55 @@
+table Productos
+	lineageTag: abaf8e22-375e-4fbf-9f7f-4b2889929b0b
+
+	column IdProducto
+		dataType: int64
+		formatString: 0
+		lineageTag: 68614dd4-c982-446c-b34d-b4bf8a4a4272
+		summarizeBy: none
+		sourceColumn: IdProducto
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoría
+		dataType: string
+		lineageTag: 58d01a06-b623-4254-9065-b6bb28e181ab
+		summarizeBy: none
+		sourceColumn: Categoría
+
+		annotation SummarizationSetBy = Automatic
+
+	column Product
+		dataType: string
+		lineageTag: 59956329-f36f-4ced-8754-846b2888b8c7
+		summarizeBy: none
+		sourceColumn: Product
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Producto'
+		dataType: string
+		lineageTag: 535245c7-fab2-4a7d-ae10-24674f9bdd11
+		summarizeBy: none
+		sourceColumn: Tipo de Producto
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Productos = m
+		mode: import
+		source =
+				let
+				    Origen = Excel.Workbook(File.Contents("C:\Users\tijer\OneDrive\Escritorio\Pacífico Evaluación\Practicante\Proyecto_TresChanchitos\Dataframe\Productos.xlsx"), null, true),
+				    Sheet1_Sheet = Origen{[Item="Sheet1",Kind="Sheet"]}[Data],
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Sheet1_Sheet, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"IdProducto", Int64.Type}, {"Name", type text}, {"cat", type text}}),
+				    #"Columnas con nombre cambiado" = Table.RenameColumns(#"Tipo cambiado",{{"cat", "Categoría"}}),
+				    #"Dividir columna por delimitador" = Table.SplitColumn(#"Columnas con nombre cambiado", "Name", Splitter.SplitTextByEachDelimiter({" "}, QuoteStyle.Csv, false), {"Name.1", "Name.2"}),
+				    #"Tipo cambiado1" = Table.TransformColumnTypes(#"Dividir columna por delimitador",{{"Name.1", type text}, {"Name.2", type text}}),
+				    #"Columnas con nombre cambiado1" = Table.RenameColumns(#"Tipo cambiado1",{{"Name.1", "Product"}, {"Name.2", "Tipo de Producto"}})
+				in
+				    #"Columnas con nombre cambiado1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegación
+

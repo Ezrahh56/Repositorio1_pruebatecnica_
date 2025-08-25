@@ -1,0 +1,25 @@
+relationship cbe48c25-b91e-4424-a35e-f64474fb5dc2
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Calendario.Fecha
+	toColumn: LocalDateTable_6216dc66-2344-4a92-a84e-c764e2616f71.Date
+
+relationship AutoDetected_4ef7d9bf-5c47-47f9-b13e-d913391a6476
+	fromColumn: Data.IdCliente
+	toColumn: Clientes.IdCliente
+
+relationship AutoDetected_7c036a76-d709-49c4-8f14-9c26a3f36c6c
+	fromColumn: Data.IdProducto
+	toColumn: Productos.IdProducto
+
+relationship 061a8db6-dea5-64f1-5d5f-bfef8194e9a6
+	fromColumn: Data.IdTerritorio
+	toColumn: Territorio.IdTerritorio
+
+relationship 1bfb4ab0-6159-a7b6-5157-92239673a619
+	fromColumn: Data.IdVendedor
+	toColumn: Vendedor.IdVendedor
+
+relationship eb70b379-4d9e-bf7d-0860-b68752edfb97
+	fromColumn: Data.Fecha
+	toColumn: Calendario.Fecha
+
