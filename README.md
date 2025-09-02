@@ -1,4 +1,4 @@
-# Pproyecto de una prueba técnica, utilizando R para la importación, edición y exportación de datos en Excel y luego presentarlo en Power BI
+# Proyecto de una prueba técnica, utilizando R para la importación, edición y exportación de datos en Excel y luego presentarlo en Power BI
 
 Presentación del Proyecto Tres Chanchitos
 
